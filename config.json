@@ -16,7 +16,7 @@
         ],
         "search_by_keywords": true,
         "search_language": "en",
-        "days_back": 7
+        "days_back": 1
     },
     "use_newspaper": true,
     "news_sources": {
@@ -85,7 +85,7 @@
             "medicine"
         ]
     },
-    "max_articles": 30,
+    "max_articles": 15,
     "language": "zh",
     "use_deepseek_summary": true,
     "deepseek_api_key": "sk-c8df38f541584acbb2bd2e3186205c47",
