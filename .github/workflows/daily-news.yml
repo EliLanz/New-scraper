@@ -1,6 +1,9 @@
 name: Daily News Scraper
 
-# 触发条件
+#     steps:
+      # 1. 检出代码
+      - name: 检出代码
+        uses: actions/checkout@v4
 on:
   # 定时任务：每天早上 8:00 北京时间运行（UTC 0:00）
   schedule:
@@ -77,22 +80,23 @@ jobs:
         continue-on-error: true
       
       # 7. 上传报告作为 artifact（可选）
-      - name: 📤 上传新闻报告
-        if: always()
-        uses: actions/upload-artifact@v3
+            # 9. 上传生成的报告（可选）
+      - name: 上传新闻报告
+        if: always()  # 即使失败也上传已生成的内容
+        uses: actions/upload-artifact@v4
         with:
-          name: news-report-${{ github.run_number }}
-          path: output/*.md
-          retention-days: 7
+          name: news-report
+          path: output/
+          retention-days: 30  # 保留 30 天
       
-      # 8. 上传日志（用于调试）
-      - name: 📋 上传日志
+      # 10. 上传日志文件
+      - name: 上传执行日志
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: logs-${{ github.run_number }}
-          path: logs/*.log
-          retention-days: 3
+          name: logs
+          path: logs/
+          retention-days: 7  # 日志保留 7 天
       
       # 9. 显示执行结果
       - name: ✅ 执行完成

@@ -10,9 +10,9 @@ jobs:
   run-news-task:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       
@@ -35,8 +35,7 @@ jobs:
         run: python daily_news_task.py
       
       - name: 上传报告
-        if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: news-report
-          path: output/*.md
+          path: output/
