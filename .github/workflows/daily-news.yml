@@ -1,9 +1,5 @@
 name: Daily News Scraper
 
-#     steps:
-      # 1. 检出代码
-      - name: 检出代码
-        uses: actions/checkout@v4
 on:
   # 定时任务：每天早上 8:00 北京时间运行（UTC 0:00）
   schedule:
@@ -32,11 +28,11 @@ jobs:
     steps:
       # 1. 检出代码
       - name: 📥 检出代码
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       # 2. 设置 Python 环境
       - name: 🐍 设置 Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -79,24 +75,23 @@ jobs:
           python daily_news_task.py
         continue-on-error: true
       
-      # 7. 上传报告作为 artifact（可选）
-            # 9. 上传生成的报告（可选）
-      - name: 上传新闻报告
-        if: always()  # 即使失败也上传已生成的内容
+      # 7. 上传生成的报告（可选）
+      - name: 📤 上传新闻报告
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: news-report
           path: output/
-          retention-days: 30  # 保留 30 天
+          retention-days: 30
       
-      # 10. 上传日志文件
-      - name: 上传执行日志
+      # 8. 上传日志文件
+      - name: 📋 上传执行日志
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: logs
           path: logs/
-          retention-days: 7  # 日志保留 7 天
+          retention-days: 7
       
       # 9. 显示执行结果
       - name: ✅ 执行完成
@@ -107,7 +102,7 @@ jobs:
           echo "=========================================="
           echo "执行时间: $(date '+%Y-%m-%d %H:%M:%S')"
           echo "生成的报告:"
-          ls -lh output/*.md | tail -5
+          ls -lh output/*.md 2>/dev/null | tail -5 || echo "暂无报告文件"
       
       # 10. 错误处理
       - name: ❌ 执行失败
@@ -119,5 +114,5 @@ jobs:
           echo "请查看日志以获取详细错误信息"
           if [ -f logs/*.log ]; then
             echo "最新日志:"
-            tail -20 logs/*.log
+            tail -20 logs/*.log 2>/dev/null || echo "暂无日志文件"
           fi
