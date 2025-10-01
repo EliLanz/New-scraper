@@ -1,0 +1,97 @@
+{
+    "use_newsapi": true,
+    "newsapi_key": "abae84e6574846fe8e916d4d3418da0e",
+    "newsapi_config": {
+        "fetch_top_headlines": true,
+        "countries": [
+            "us",
+            "gb",
+            "cn"
+        ],
+        "categories": [
+            "technology",
+            "business",
+            "science",
+            "health"
+        ],
+        "search_by_keywords": true,
+        "search_language": "en",
+        "days_back": 7
+    },
+    "use_newspaper": true,
+    "news_sources": {
+        "国际": [
+            "https://www.bbc.com/news",
+            "https://techcrunch.com"
+        ],
+        "国内": [
+            "https://36kr.com"
+        ]
+    },
+    "keywords": {
+        "科技": [
+            "科技",
+            "技术",
+            "互联网",
+            "technology",
+            "tech",
+            "internet",
+            "digital",
+            "innovation"
+        ],
+        "金融": [
+            "金融",
+            "财经",
+            "股票",
+            "投资",
+            "经济",
+            "finance",
+            "stock",
+            "investment",
+            "economy",
+            "market"
+        ],
+        "AI": [
+            "人工智能",
+            "AI",
+            "机器学习",
+            "深度学习",
+            "artificial intelligence",
+            "machine learning",
+            "deep learning",
+            "neural network",
+            "ChatGPT",
+            "GPT",
+            "LLM"
+        ],
+        "教育": [
+            "教育",
+            "学校",
+            "大学",
+            "培训",
+            "education",
+            "school",
+            "university",
+            "learning",
+            "student"
+        ],
+        "健康": [
+            "健康",
+            "医疗",
+            "医学",
+            "health",
+            "medical",
+            "healthcare",
+            "medicine"
+        ]
+    },
+    "max_articles": 30,
+    "language": "zh",
+    "use_deepseek_summary": true,
+    "deepseek_api_key": "sk-c8df38f541584acbb2bd2e3186205c47",
+    "deepseek_summary_config": {
+        "min_length": 300,
+        "max_length": 500,
+        "style": "professional"
+    }
+}

@@ -1,0 +1,9 @@
+newspaper3k>=0.2.8
+requests>=2.31.0
+lxml>=4.9.0
+lxml_html_clean>=0.4.0
+pillow>=10.0.0
+nltk>=3.8.0
+python-dateutil>=2.8.2
+python-crontab>=3.0.0
+openai>=1.0.0

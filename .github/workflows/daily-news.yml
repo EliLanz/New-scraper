@@ -1,0 +1,119 @@
+name: Daily News Scraper
+
+# 触发条件
+on:
+  # 定时任务：每天早上 8:00 北京时间运行（UTC 0:00）
+  schedule:
+    - cron: '0 0 * * *'  # UTC 时间 0:00，即北京时间 8:00
+  
+  # 允许手动触发
+  workflow_dispatch:
+  
+  # Push 到 main 分支时也运行（用于测试）
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - '.github/workflows/**.yml'
+
+# 环境变量（公共配置）
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  scrape-and-send:
+    name: 抓取新闻并发送邮件
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 检出代码
+      - name: 📥 检出代码
+        uses: actions/checkout@v3
+      
+      # 2. 设置 Python 环境
+      - name: 🐍 设置 Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      # 3. 安装依赖
+      - name: 📦 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      # 4. 创建配置文件（从 GitHub Secrets 读取）
+      - name: ⚙️ 配置环境
+        run: |
+          # 创建邮件配置文件
+          cat > email_config.json << EOF
+          {
+            "sender_email": "${{ secrets.SENDER_EMAIL }}",
+            "sender_password": "${{ secrets.SENDER_PASSWORD }}",
+            "recipients": ${{ secrets.RECIPIENTS }},
+            "smtp_type": "${{ secrets.SMTP_TYPE }}"
+          }
+          EOF
+          
+          # 创建输出目录和日志目录
+          mkdir -p output logs
+          
+          echo "✅ 配置文件已创建"
+      
+      # 5. 运行新闻抓取
+      - name: 📰 抓取新闻
+        run: |
+          echo "开始抓取新闻..."
+          python news_scraper_hybrid.py
+        continue-on-error: false
+      
+      # 6. 发送邮件
+      - name: 📧 发送邮件
+        run: |
+          echo "准备发送邮件..."
+          python daily_news_task.py
+        continue-on-error: true
+      
+      # 7. 上传报告作为 artifact（可选）
+      - name: 📤 上传新闻报告
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: news-report-${{ github.run_number }}
+          path: output/*.md
+          retention-days: 7
+      
+      # 8. 上传日志（用于调试）
+      - name: 📋 上传日志
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs-${{ github.run_number }}
+          path: logs/*.log
+          retention-days: 3
+      
+      # 9. 显示执行结果
+      - name: ✅ 执行完成
+        if: success()
+        run: |
+          echo "=========================================="
+          echo "✅ 新闻抓取和邮件发送完成！"
+          echo "=========================================="
+          echo "执行时间: $(date '+%Y-%m-%d %H:%M:%S')"
+          echo "生成的报告:"
+          ls -lh output/*.md | tail -5
+      
+      # 10. 错误处理
+      - name: ❌ 执行失败
+        if: failure()
+        run: |
+          echo "=========================================="
+          echo "❌ 任务执行失败"
+          echo "=========================================="
+          echo "请查看日志以获取详细错误信息"
+          if [ -f logs/*.log ]; then
+            echo "最新日志:"
+            tail -20 logs/*.log
+          fi
