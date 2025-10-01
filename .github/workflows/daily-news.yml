@@ -1,9 +1,9 @@
 name: Daily News Scraper
 
 on:
-  # 定时任务：每天早上 8:00 北京时间运行（UTC 0:00）
+  # 定时任务：每天早上 7:00 北京时间运行（UTC 23:00）
   schedule:
-    - cron: '0 0 * * *'  # UTC 时间 0:00，即北京时间 8:00
+    - cron: '0 23 * * *'  # UTC 时间 23:00，即北京时间 7:00
   
   # 允许手动触发
   workflow_dispatch:
